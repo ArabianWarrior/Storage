@@ -10,4 +10,4 @@ class ConnBtwMainBlockageWrhsOrm(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     main_warehouse: Mapped[str] = mapped_column(String(100), comment="Склад основной")
-    contaminated_warehouse: Mapped[str] = mapped_column(String(100), comment="Склад засор")
+    contaminated_warehouse: Mapped[str] = mapped_column(String(100), comment="Склад засор") 

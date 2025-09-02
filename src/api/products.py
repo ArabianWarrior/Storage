@@ -1,7 +1,6 @@
 from fastapi import Query ,APIRouter
 from fastapi_cache.decorator import cache
 
-from src.tasks.tasks_test import test_task
 
 router = APIRouter(prefix="/products", tags=["Первый отдел"])
 
