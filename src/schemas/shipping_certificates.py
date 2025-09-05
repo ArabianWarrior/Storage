@@ -24,6 +24,20 @@ class ShippingCertificatesBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class ShippingCertificatesCreate(BaseModel):
+    act_number: str = Field(max_length=50)
+    creation_date: date
+    creation_time: time  
+    shipment_date: datetime
+    counterparty: str = Field(max_length=100)
+    warehouse: str = Field(max_length=100)
+    planned_sum: Decimal
+
+    # Необязательные поля
+    status: str = Field(default="В работе", max_length=50)
+    created_by: Optional[str] = Field(None, max_length=100)
+    vehicle_number: Optional[str] = Field(None, max_length=50)
+
 
 class ShippingCertificatesAdd(ShippingCertificatesBase):
     pass
