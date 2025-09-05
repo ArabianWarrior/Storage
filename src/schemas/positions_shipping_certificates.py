@@ -19,6 +19,23 @@ class PositionsShippingCertificatesBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class PositionsShippingCertificatesCreate(BaseModel):
+    # Обязательные поля
+    act_number: str = Field(max_length=50, description="Номер акта")
+    position_number: int = Field(description="Номер позиции")
+    material: str = Field(max_length=100, description="Материал")
+    gross_weight_kg: Decimal = Field(description="Вес брутто (кг)")
+
+    #Опциональные поля
+    psa_shipping_price_per_kg: Optional[Decimal] = Field(None, description="Цена отгрузки ПСА (за кг)")
+    warehouse_shipping_price_per_kg: Optional[Decimal] = Field(None, description="Цена отгрузки склад (за кг)")
+    contamination_percent: Optional[Decimal] = Field(None, description="Засор (%)")
+    contamination_kg: Optional[Decimal] = Field(None, description="Засор (кг)")
+    return_kg: Optional[Decimal] = Field(None, description="Возврат (кг)")
+    net_weight_kg: Optional[Decimal] = Field(None, description="Вес нетто (кг)")
+    warehouse_shipping_cost: Optional[Decimal] = Field(None, description="Стоимость отгрузки склада")
+    psa_shipping_cost: Optional[Decimal] = Field(None, description="Стоимость отгрузки ПСА")
+    
 
 class PositionsShippingCertificatesAdd(PositionsShippingCertificatesBase):
     pass

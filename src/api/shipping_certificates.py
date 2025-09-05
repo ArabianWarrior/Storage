@@ -3,7 +3,7 @@ from src.schemas.shipping_certificates import ShippingCertificatesCreate, Shippi
 
 #Акты отгрузки
 #Shipping certificates
-router = APIRouter(prefix="/shipping_certificates", tags=["Shipping Certificates"])
+router = APIRouter(prefix="/shipping-certificates", tags=["Shipping Certificates"])
 
 #Get - получить
 #Получить акты отгрузки
