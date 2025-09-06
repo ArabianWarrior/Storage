@@ -18,6 +18,15 @@ class ManualRepleBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class ManualRepleCreate(BaseModel):
+    replenishment_number: str = Field(max_length=50, description="Номер пополнения")
+    account_number: str = Field(max_length=50, description="Расчетный счет")
+    creation_date: date = Field(description="Дата создания")
+    creation_time: time = Field(description="Время создания")
+    created_by: str = Field(max_length=100, description="Создал")
+    amount: Decimal = Field(description="Сумма")
+
+
 
 class ManualRepleAdd(ManualRepleBase):
     pass 

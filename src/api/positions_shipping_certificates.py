@@ -20,7 +20,7 @@ async def get_shipping_position(position_id: int):
 #Создаем асинхронную функцию куда передадим нашу схему
 async def create_shipping_position(position_data: PositionsShippingCertificatesCreate):
     #Выведем сообщение об успешном добавлении
-    return {"message": "We successfully created a shipping position",
+    return {"message": "You successfully created a shipping position",
             "data": position_data.model_dump()}
 
 #Delete - для удаления данных
@@ -29,7 +29,7 @@ async def create_shipping_position(position_data: PositionsShippingCertificatesC
 #Создаем асинхронную функцию куда передадим 1 параметр (id)
 async def delete_shipping_position(position_id: int):
     #Выведем сообщение об успешном удалении
-    return {"message": f"We successfully deleted a shipping position with ID: {position_id}"}
+    return {"message": f"You successfully deleted a shipping position with ID: {position_id}"}
 
 #Put - для обновления данных
 #Создаем ручку где будем обновлять данные

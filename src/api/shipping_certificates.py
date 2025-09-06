@@ -20,7 +20,7 @@ async def get_certificates(certificate_id: int):
 async def create_certificates(certificates_data: ShippingCertificatesCreate):
     #Выводим сообщение об успешном создании актов отгрузки
     return {
-        "message": "We successfully created a shipping certificate",
+        "message": "You successfully created a shipping certificate",
         "data": certificates_data.model_dump()} #В параметр model_dump передаются все модельки
 
 #Создаем ручку где будем удалять акт отрузки. Delete
@@ -28,7 +28,7 @@ async def create_certificates(certificates_data: ShippingCertificatesCreate):
 #Создаем асинхронную ручку где будет передан 1 параметр (id)
 async def delete_certificates(certificate_id: int):
     #Выводим сообщение об успешном удалении
-    return {"message": f"We successfully deleted a shipping certificate with ID: {certificate_id}"}
+    return {"message": f"You successfully deleted a shipping certificate with ID: {certificate_id}"}
 
 #Создаем ручку где будем обновления данных. Put 
 @router.put("/{certificate_id}")

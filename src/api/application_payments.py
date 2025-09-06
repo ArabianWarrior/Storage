@@ -16,7 +16,7 @@ router = APIRouter(prefix="/applications", tags=["Applications"])
 #Без ID невозможно понять какой именно платеж нужен пользователю
 async def get_application(application_id: int):
     #Выводим сообщение об нашем платеже
-    return {"message": f"We get a payment application: {application_id}"}
+    return {"message": f"You get a payment application: {application_id}"}
 #Примеры использования:
 # Обновить примеры:
 #Например: GET /applications/123 вернет заявку с ID=123
