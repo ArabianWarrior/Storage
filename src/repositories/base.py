@@ -188,8 +188,6 @@ class BaseRepository:
     # 9. Верни все найденные записи списком
         return result.scalars().all()
 
-    
-
 
     async def get_by_fields_in(self, field_name: str, values_list: list):
         if not hasattr(self.model, field_name):

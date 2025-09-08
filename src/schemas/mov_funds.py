@@ -1,4 +1,4 @@
-from datetime import date, time
+from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Optional
 
@@ -17,6 +17,18 @@ class MoveFundsBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class MoveFundsCreate(MoveFundsBase):
+    transfer_number: str = Field(max_length=50, description="Номер перевода")
+    donor_account_number: str = Field(max_length=50, description="Счет донор") 
+    recipient_account_number: str = Field(max_length=50, description="Счет получатель")
+    amount: Decimal = Field(description="Сумма")
+    performed_by: str = Field(max_length=100, description="Выполнил")
+    
+    # Автозаполнение на уровне схемы:
+    creation_date: date = Field(default_factory=date.today, description="Дата создания")
+    creation_time: time = Field(default_factory=lambda: datetime.now().time(), description="Время создания")
+
+
 class MoveFundsAdd(MoveFundsBase):
     pass 
 
@@ -27,7 +39,6 @@ class MoveFundsRead(MoveFundsBase):
 
 
 class MoveFundsUpdate(BaseModel):
-
     transfer_number: Optional[str] = Field(None, max_length=50, description="Номер перевода")
     donor_account_number: Optional[str] = Field(None, max_length=50, description="Расчетный счет донор")
     recipient_account_number: Optional[str] = Field(None, max_length=50, description="Расчетный счет рецепиент")
