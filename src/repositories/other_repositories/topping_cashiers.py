@@ -16,3 +16,12 @@ class TopCashiersRepository(BaseRepository):
     #Метод считает денежную сумму
     async def get_total_amount_by_cashier(self, cashier: str) -> Optional[Decimal]:
         return await self.sum_by_field("amount", {"cashier": cashier})
+    
+        # В TopCashiersRepository добавить:
+    async def get_active_replenishments(self):
+        """Получить все активные (неудаленные) пополнения"""
+        return await self.get_by_field("delete_indicator", False)
+        
+    async def soft_delete_replenishment(self, replenishment_id: int):
+        """Мягкое удаление пополнения"""
+        return await self.update_by_id(replenishment_id, {"delete_indicator": True})

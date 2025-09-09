@@ -15,6 +15,16 @@ class TopCashiersBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class TopCashiersCreate(BaseModel):
+    replenishment_number: str = Field(max_length=50, description="Номер пополнения")
+    cashier: str = Field(max_length=100, description="Кассир")
+    creation_date: date = Field(description="Дата")
+    creation_time: time = Field(description="Время")
+    created_by: str = Field(max_length=100, description="Создал")
+    amount: Decimal = Field(description="Сумма")
+    
+
+
 
 class TopCashiersAdd(TopCashiersBase):
     pass
