@@ -18,6 +18,17 @@ class TransfersMaterialsBtwWhsBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class TransfersMaterialsBtwWhsCreate(TransfersMaterialsBtwWhsBase):
+    """Схема для создания перевода материалов"""
+    # Даты Optional так как в модели есть default=datetime.utcnow
+    transfer_date: Optional[datetime] = Field(None, description="Дата перевода")
+    transfer_time: Optional[datetime] = Field(None, description="Время перевода")
+    
+    # Пример валидации: склады должны быть разными
+    def validate_warehouses(self):
+        if self.from_warehouse == self.to_warehouse:
+            raise ValueError("Склад отправления и назначения должны быть разными")
+
 
 class TransfersMaterialsBtwWhsAdd(TransfersMaterialsBtwWhsBase):
     pass
