@@ -1,28 +1,36 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
-class UserAdd(BaseModel):
-    email: str
-    nickname: str
-    hashed_password: str
-
-class UserUpdate(BaseModel):
-    email: str | None = None
-    nickname: str | None = None
-
-class UserUpdatePass(BaseModel):
-    old_password: str 
-    new_password: str 
-
-class UserCreate(BaseModel):
-    email: str
+class UserRequestAdd(BaseModel):
+    email: EmailStr
     nickname: str
     password: str
 
+class UserAdd(BaseModel):
+    email: EmailStr
+    nickname: str
+    hashed_password: str
+
 class User(BaseModel):
     id: int
-    email: str
- 
+    email: EmailStr
+
     model_config = ConfigDict(from_attributes=True)
+
+class UserWithHashedPass(User):
+    hashed_password: str
+
+#Для чего нужен model_config 
+#Простыми словами
+#Без from_attributes=True Pydantic принимает только словари 
+#Пример: {"name": "John"}
+#С from_attributes=True Pydantic может взять данные из любого обьекта
+#у которого есть нужные атрибуты
+#Пример: obj.name, obj.email
+#Эта настройка говорит: Pydantic, умей читать данные не только из словарей'
+#но и из атрибутов обьектов
+
+
+
 
 
 #Опциональные параметры - объяснение
