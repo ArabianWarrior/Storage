@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from src.schemas.users import UserRequestAdd
+from src.schemas.users import UserRequestAdd, UserAdd
 from src.database import async_session_maker
 from src.repositories.other_repositories.user import UsersRepositiory
 
@@ -18,6 +18,15 @@ router = APIRouter(prefix="/auth", tags=["Авторазиция и аутент
 async def register_user(
     user_data: UserRequestAdd,    
 ):
+    #Хэшированный пароль
+    hashed_password = "2312321"
+    #Добавляем и передаем наши параметры
+    new_user_data = UserAdd(email=user_data.email, hashed_password=hashed_password)
+    #Открываем сессию c базой данных
     async with async_session_maker() as session:
-        user = await UsersRepositiory(session).add(user_data)
+        #Добавляем нашего пользователя
+        user = await UsersRepositiory(session).add(new_user_data)
+        #Говорим что сохраним это окончательно
         await session.commit()
+    #Вернем сообщение что все ок
+    return {"status": "OK"}
