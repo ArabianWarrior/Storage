@@ -1,10 +1,14 @@
 from fastapi import APIRouter
-from src.schemas.users import UserRequestAdd, UserAdd
+from passlib.context import CryptContext
 from src.database import async_session_maker
+
+from src.schemas.users import UserRequestAdd, UserAdd
 from src.repositories.other_repositories.user import UsersRepositiory
 
 
+
 router = APIRouter(prefix="/auth", tags=["Авторазиция и аутентефикация"])
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 #Когда мы добавляем какие-либо данные или когда мы используем
@@ -19,7 +23,7 @@ async def register_user(
     user_data: UserRequestAdd,    
 ):
     #Хэшированный пароль
-    hashed_password = "2312321"
+    hashed_password = pwd_context.hash(user_data.password)
     #Добавляем и передаем наши параметры
     new_user_data = UserAdd(email=user_data.email, hashed_password=hashed_password)
     #Открываем сессию c базой данных
