@@ -22,6 +22,14 @@ class BaseRepository:
             raise AttributeError(f"Модель {self.model.__name__} не имеет поля {field_name}")
         return getattr(self.model, field_name)
 
+    async def get_one_or_none(self, **filter_by):
+        query = select(self.model).filter_by(**filter_by)
+        result = await self.session.execute(query)
+        model = result.scalars().one_or_none()
+        if model is None:
+            return None
+        return model
+
     async def get_by_id(self, id: int):
         stmt = select(self.model).where(self.model.id == id)
         result = await self.db.execute(stmt)
