@@ -19,6 +19,11 @@ class User(BaseModel):
 class UserWithHashedPass(User):
     hashed_password: str
 
+class UserWithHashedPass(User):
+    hashed_password: str
+
+
+
 #Для чего нужен model_config 
 #Простыми словами
 #Без from_attributes=True Pydantic принимает только словари 
