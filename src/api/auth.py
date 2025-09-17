@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException, Response, Request
+from fastapi import APIRouter, HTTPException, Response
 
+from api.dependencies import UserIdDep
 from services.auth import AuthService
 from src.database import async_session_maker
 from src.schemas.users import UserRequestAdd, UserAdd
@@ -79,11 +80,8 @@ async def login_user(
 #request - запрос
 @router.get("/only_auth")
 async def only_auth(
-    request: Request
+    user_id: UserIdDep
 ):
-    access_token = request.cookies.get("access_token", None)
-    data = AuthService().decode_token(access_token)
-    user_id = data["user_id"]
     async with async_session_maker() as session:
         user = await UsersRepositiory(session).get_one_or_none(id=user_id)
         return user
