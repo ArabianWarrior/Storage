@@ -77,9 +77,17 @@ async def login_user(
         #Так же мы отправим файл в виде JSON
         return {"access_token": access_token}
 
+@router.post("/logout")
+async def logout(
+    response: Response):
+    
+    response.delete_cookie("access_token")
+    return {"status": "OK"}
+
+
 #request - запрос
-@router.get("/only_auth")
-async def only_auth(
+@router.get("/me")
+async def get_me(
     user_id: UserIdDep
 ):
     async with async_session_maker() as session:
