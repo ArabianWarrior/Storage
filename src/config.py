@@ -1,6 +1,10 @@
+from typing import Literal
 from pydantic_settings import BaseSettings, SettingsConfigDict 
 
 class Settings(BaseSettings):
+    #Literal применяется если нужно указать несколько значений
+    MODE: Literal["TEST", "LOCAL", "DEV", "PROD"]
+    
     DB_NAME: str
     DB_HOST: str
     DB_PORT: int
