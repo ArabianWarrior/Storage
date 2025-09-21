@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter
 from src.schemas.positions_shipping_certificates import PositionsShippingCertificatesCreate, PositionsShippingCertificatesUpdate
 #позиции актов отгрузки
 #The positions of the shipping certificates

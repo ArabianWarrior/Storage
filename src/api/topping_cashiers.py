@@ -1,7 +1,6 @@
-from datetime import date, time
-from decimal import Decimal
-from typing import Optional
 from fastapi import APIRouter, HTTPException
+
+
 from src.schemas.topping_cashiers import TopCashiersCreate
 from src.database import async_session_maker
 from src.repositories.other_repositories.topping_cashiers import TopCashiersRepository

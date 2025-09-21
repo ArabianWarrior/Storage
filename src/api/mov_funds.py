@@ -1,7 +1,8 @@
 from datetime import date
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Depends 
-from src.repositories.base import BaseRepository
+from fastapi import APIRouter, HTTPException
+
+
 from src.schemas.mov_funds import MoveFundsCreate
 from src.models.mov_funds import MoveFundsOrm  # модель
 from src.repositories.other_repositories.mov_funds import MoveFundsRepository   

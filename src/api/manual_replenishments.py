@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from src.repositories.base import BaseRepository
 from src.schemas.manual_replenishments import ManualRepleCreate
+from src.api.dependencies import DBDep
 
 
 #Ручное пополнение расчетных счетов
@@ -17,17 +18,17 @@ router = APIRouter(prefix="/replenishments", tags=["Manual Replenishments"])
 #Создаем ручку где получаем конкретное пополнeние
 @router.get("/{replenishment_id}")
 #Создаем асинхронную функцию, куда будет передано два параметра
-async def get_replenishment(replenishment_id: int, repo: BaseRepository):
+async def get_replenishment(replenishment_id: int, db: DBDep):
     #Получаем пополнение из базы данных
-    replenishment = await repo.get_by_id(replenishment_id)
+    replenishment = await db.manual.get_by_id(replenishment_id)
 
     #Если пополнение не найдено
     if not replenishment:
         raise HTTPException(status_code=404, detail="Replenishment not found")  
     
-    # Проверяем не удалено ли пополнение
-    if replenishment.delete_indicator:
-        raise HTTPException(status_code=404, detail="Replenishment was deleted")
+    # # Проверяем не удалено ли пополнение
+    # if replenishment.delete_indicator:
+    #     raise HTTPException(status_code=404, detail="Replenishment was deleted")
 
     #Возвращаем найденное пополнение
     return replenishment
@@ -38,11 +39,11 @@ async def get_replenishment(replenishment_id: int, repo: BaseRepository):
 #Создаем асинхронную функцию где будут переданы 3 параметра
 async def create_replenishment(
     replenishment_data: ManualRepleCreate, 
-    repo: BaseRepository,
+    db: DBDep,
     ):
     
     # 1. Добавить await и model_dump()
-    replenishment = await repo.create(replenishment_data.model_dump())
+    replenishment = await db.manual.create(replenishment_data.model_dump())
 
     # 2. Проверить что создание прошло успешно
     if not replenishment:
@@ -58,9 +59,9 @@ async def create_replenishment(
 #Создаем ручку где будем отменять пополнение с помощью soft_delete
 @router.delete("/{replenishment_id}")
 #Создаем асинхронную функцию где передадим 2 параметра
-async def replenishment_soft_delete(replenishment_id: int, repo: BaseRepository):
+async def replenishment_soft_delete(replenishment_id: int, db: DBDep):
     #Создадим значение где будет наш функционал
-    deleted_replenishment = await repo.soft_delete(replenishment_id, "delete_indicator")
+    deleted_replenishment = await db.manual.soft_delete(replenishment_id, "delete_indicator")
 
     #Если не удалилось
     if not deleted_replenishment:

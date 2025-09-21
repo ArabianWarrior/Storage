@@ -1,7 +1,6 @@
-from typing import Any, List, Optional
+from typing import Any, Optional
 from pydantic import BaseModel
-from sqlalchemy import asc, delete, desc, func, insert, or_, select, update, values
-from sqlalchemy import in_
+from sqlalchemy import asc, delete, desc, func, insert, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -29,6 +28,13 @@ class BaseRepository:
         if model is None:
             return None
         return model
+
+    async def add(self, data: BaseModel):
+        add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
+        result = await self.session.execute(add_data_stmt)
+        model = result.scalars().one()
+        return self.mapper.map_to_domain_entity(model)
+
 
     async def get_by_id(self, id: int):
         stmt = select(self.model).where(self.model.id == id)

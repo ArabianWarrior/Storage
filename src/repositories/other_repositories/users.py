@@ -6,7 +6,7 @@ from src.models.users import UsersOrm
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.schemas.users import  User, UserWithHashedPass
 
-class UsersRepositiory(BaseRepository):
+class UsersRepository(BaseRepository):
     def __init__(self, db: AsyncSession):
         super().__init__(db, UsersOrm)
     model = UsersOrm

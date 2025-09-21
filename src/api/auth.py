@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException, Response
 
-from api.dependencies import UserIdDep
-from services.auth import AuthService
+from src.api.dependencies import UserIdDep
+from src.services.auth import AuthService
 from src.database import async_session_maker
 from src.schemas.users import UserRequestAdd, UserAdd
-from src.repositories.other_repositories.user import UsersRepositiory
-
+from src.api.dependencies import DBDep
 
 
 router = APIRouter(prefix="/auth", tags=["Авторазиция и аутентефикация"])
@@ -22,60 +21,37 @@ router = APIRouter(prefix="/auth", tags=["Авторазиция и аутент
 #Эта функция будет принимать Pydantic схему
 async def register_user(
     user_data: UserRequestAdd,    
+    db: DBDep
 ):
     #Хэшированный пароль
     hashed_password = AuthService().hash_password(user_data.password)
-    
     #Добавляем и передаем наши параметры
-    new_user_data = UserAdd(email=user_data.email, hashed_password=hashed_password)
-    
-    #Открываем сессию c базой данных
-    async with async_session_maker() as session:
-        
-        #Добавляем нашего пользователя
-        user = await UsersRepositiory(session).add(new_user_data)
-        
-        #Говорим что сохраним это окончательно
-        await session.commit()
-    
+    new_user_data = UserAdd(email=user_data.email, hashed_password=hashed_password, nickname=user_data.nickname)
+    await db.users.add(new_user_data)
+    await db.commit()
     #Вернем сообщение что все ок
     return {"status": "OK"}
 
 
-#Создаем ручку где мы будем логиниться
 @router.post("/login")
-#Асинхронная функция где пользователь будет логиниться
-#Передаем сюда 2 параметра
 async def login_user(
-    user_data: UserRequestAdd,
+    db: DBDep,
+    data: UserRequestAdd,
     response: Response,
 ):
-    #Открываем ссессию с базой данных
-    async with async_session_maker() as session:
-       
-        #Получаем email пользователя
-        user = await UsersRepositiory(session).get_user_with_hashed_password(email=user_data.email)
-        
-        #Проверяем существует ли пользователь под таким email
-        #Если нет
+    # hashed_password = pwd_context.hash(data.password)
+    # new_user_data = UserAdd(email=data.email, hashed_password=hashed_password, nickname=data.nickname)
+    
+        user = await db.users.get_one_or_none(email=data.email)
+        user = await db.users.get_user_with_hashed_password(email=data.email)
         if not user:
-            #То вернем ошибку пользователю
-            raise HTTPException(status_code=401, detail="Пользователя с таким email не существует")
-        
-        #Проверяем совпадает ли пароль пользователь
-        #Если нет
-        if not AuthService().verify_password(user_data.password, user.hashed_password):
-            #То вернем ошибку пользователю
-            raise HTTPException(status_code=401, detail="Пароль не верный")
-        
+            raise HTTPException(status_code=401, detail="Пользователь с таким email не зарегистрирован")
+        if not AuthService().verify_password(data.password, user.hashed_password):
+            raise HTTPException(status_code=401, detail="Пароль неверный")
         access_token = AuthService().create_access_token({"user_id": user.id})
-        
-        #Мы отправляем файл в cookie
-        #Response помимо того что добавляет еще cookie, помимо того что отправляет ответ
-        response.set_cookie("access_token", access_token) 
-        
-        #Так же мы отправим файл в виде JSON
+        response.set_cookie("access_token", access_token)
         return {"access_token": access_token}
+
 
 @router.post("/logout")
 async def logout(
@@ -88,8 +64,7 @@ async def logout(
 #request - запрос
 @router.get("/me")
 async def get_me(
-    user_id: UserIdDep
+    user_id: UserIdDep,
+    db: DBDep,
 ):
-    async with async_session_maker() as session:
-        user = await UsersRepositiory(session).get_one_or_none(id=user_id)
-        return user
+    user = await db.users.get_one_or_none(id=usr)

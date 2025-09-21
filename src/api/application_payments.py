@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from src.schemas.application_payments import ApplicationPaymentsCreate, ApplicationPaymentsUpdate
-from src.repositories.base import BaseRepository
+from src.api.dependencies import DBDep
+
 
 #Приложения по оплате актов приема
 #Applications for payment of acceptance certificates
@@ -31,20 +32,23 @@ async def create_application(application_data: ApplicationPaymentsCreate):
     return {"message": "You have successfully created a payment request",
             "data": application_data.model_dump()}
 
-#Создаем ручку где будем удалять заявку на платеж
+
 #Здесь мы используем метод из нашего базового репозитория
+#Создаем ручку для мягкого удаления заявки на платеж
 @router.delete("/{application_id}")
-#Создаем асинхронную функцию где будет передан 1 параметр
-async def soft_delete_application(application_id: int, application_repo: BaseRepository):
-    #Создаем значение куда будет передан наш параметр в котором мы используем метод из базового репозитория
-    deleted_payment = await application_repo.soft_delete(application_id, "is_deleted")
-
-    #Если не получилось удалить
+#application_id - ID заявки из URL, application_repo - репозиторий через Depends
+async def soft_delete_application(
+    application_id: int, 
+    db: DBDep,
+):
+    #Вызываем метод мягкого удаления из базового репозитория
+    deleted_payment = await db.application.soft_delete(application_id, "is_deleted")
+    
+    #Если заявка не найдена - выбрасываем ошибку 404
     if not deleted_payment:
-        #То выведем сообщение об ошибке
         raise HTTPException(status_code=404, detail="Payment application not found")
-
-    #Выведем сообщение об удалении 
+    
+    #Возвращаем сообщение об успешном удалении
     return {
         "message": f"Payment application {application_id} successfully deleted",
         "deleted_application": deleted_payment
@@ -56,11 +60,11 @@ async def soft_delete_application(application_id: int, application_repo: BaseRep
 #Создаем асинхронную функцию, где будет передано 3 параметра
 async def update_payment_application(
     application_id: int, 
-    application_repo: BaseRepository,
+    db: DBDep,
     application_data: ApplicationPaymentsUpdate
     ):
     #Создаем значение где будет происходить обновление
-    update_with_id = await application_repo.update_by_id(
+    update_with_id = await db.application.update_by_id(
         application_id, #ID записи которую обновляем (например: 123)
         application_data.model_dump(exclude_unset=True) #Данные для обновления
         )
