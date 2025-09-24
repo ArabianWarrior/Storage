@@ -11,7 +11,7 @@ async def test_create_application():
         payment_method="Карта",
         payment_source="Прибыль организации",
         created_by="Марк Абрамов")
-    
+    #Используем наш DBManager, для более комфортной эксплуатации
     async with DBManager(session_factory=async_session_maker) as db:
         new_application_data = await db.application.add(create_application)
         print(f"{new_application_data=}")    
