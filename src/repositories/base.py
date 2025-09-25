@@ -6,9 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 class BaseRepository:
     def __init__(self, db: AsyncSession, model:type):
-        self.db = db
+        self.session = db
         self.model = model
-
 
     # self.model означает "модель ЭТОГО конкретного репозитория"
 
@@ -33,7 +32,7 @@ class BaseRepository:
         add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
         result = await self.session.execute(add_data_stmt)
         model = result.scalars().one()
-        return self.mapper.map_to_domain_entity(model)
+        return model
 
 
     async def get_by_id(self, id: int):

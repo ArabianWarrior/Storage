@@ -1,6 +1,5 @@
 from src.services.auth import AuthService
 
-
 #Если мы хотим протестировать какую либо функицию
 #то после def обязательно нужно написать в начале функции
 #test. Например: test_add_hotel, test_delete_hotel.

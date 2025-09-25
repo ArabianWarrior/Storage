@@ -25,11 +25,11 @@ class DBManager:
         self.transfers = TransfersMaterialsBtwWhsRepository(self.session)
 
         return self
-    
-    async def __aexit__(self, *args):
-
-        await self.session.rollback()
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            # Если была ошибка - откатываем
+            await self.session.rollback()
+        else:
+            # Если всё хорошо - коммитим (для тестов)
+            await self.session.commit()
         await self.session.close()
-
-    async def commit(self):
-        await self.session.commit()
