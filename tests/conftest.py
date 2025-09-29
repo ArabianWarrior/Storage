@@ -1,4 +1,3 @@
-from sqlalchemy.ext.asyncio import create_async_engine
 from src.database import Base, engine_null_pool 
 from src.config import settings
 
@@ -24,7 +23,7 @@ async def async_main():
     #То есть часть которая внизу
     
     async with engine_null_pool.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
         #metadata - это атрибут класса Base, мы везде от него наследуемся
         #в metadata - сохраняется информация о всех таблицах которые у нас есть
